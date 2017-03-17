@@ -1,0 +1,304 @@
+<html lang="en" >
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Angular Material style sheet -->
+	<!-- <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css"> -->
+	<link rel="stylesheet" href="libs/angular/angular-material.min.css">
+	
+	<!-- Angular Material requires Angular.js Libraries -->
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script> -->
+	<script src="libs/angular/angular.min.js"></script>
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script> -->
+	<script src="libs/angular/angular-route.min.js"></script>
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script> -->
+	<script src="libs/angular/angular-animate.min.js"></script>
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script> -->
+	<script src="libs/angular/angular-aria.min.js"></script>
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script> -->
+	<script src="libs/angular/angular-messages.min.js"></script>
+
+	<!-- Angular Material Library -->
+	<!-- <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script> -->
+	<script src="libs/angular/angular-material.min.js"></script>
+	
+	<!-- Load modules -->
+	<link rel="stylesheet" href="/modules/PanelMenuModule.css">
+	
+	<script src="/modules/PanelMenuModule.js"></script>
+	<script src="/modules/MessengerModule.js"></script>
+	
+	<!-- Load controllers -->
+	<script src="/controllers/controller.template.manage.app.js"></script>
+	<script src="/controllers/controller.template.response.router.js"></script>
+	<script src="/controllers/controller.template.setting.app.js"></script>
+	
+</head>
+<body ng-app="dashboard" ng-controller="DashboardController" ng-init="appId=''" >
+	<div layout="column" ng-cloak>
+		<section layout="row" flex>
+			<md-sidenav class="md-sidenav-left" md-component-id="left" md-whiteframe="4">
+				<md-toolbar class="md-theme-dialog">
+					<h1 class="md-toolbar-tools"><%= user.username %></h1>
+				</md-toolbar>
+				<md-content layout-margin>
+					<md-button class="md-accent" ng-click="gotToAppList()">
+						App list
+					</md-button>
+				</md-content>
+			</md-sidenav>
+			<md-content flex ng-init="getListOfApp()">
+				<md-toolbar class="md-hue-2">
+					<div class="md-toolbar-tools">
+						<md-button class="md-icon-button" aria-label="menus" ng-click="toggleMenu()">
+							<md-icon md-svg-icon="/icons/ic_menu_white_24px.svg"></md-icon>
+						</md-button>
+						<div flex></div>
+						<md-button id="dashboard-menu-button" class="md-icon-button" aria-label="menus" ng-click="openDashboardMenu($event)">
+							<md-icon md-svg-icon="/icons/ic_more_vert_white_24px.svg"></md-icon>
+						</md-button>
+					</div>
+				</md-toolbar>
+				<div layout="column" ng-view >
+					
+				</div>
+				
+				<script type="text/ng-template" id="/app/lists.htm">
+					<md-progress-linear md-mode="indeterminate" ng-show="progressLoadAppLists"></md-progress-linear>
+					<md-list flex>
+						<md-subheader class="md-no-sticky">List of Application</md-subheader>
+						<md-list-item class="md-3-line md-long-text" ng-repeat="app in listOfApps">
+							<img ng-src="/images/salesforce1600.png?100" class="md-avatar" alt="photo" />
+							<div class="md-list-item-text" layout="column">
+								<h3>{{app.appName}}</h3>
+								<p>{{app.appDescription}}</p>
+								<div layout="row">
+									<md-button ng-click="openPreviewAppDialog($event, app)">Preview</md-button>
+									<md-button ng-click="manageApp(app._id)" >Manage</md-button>
+								</div>
+							</div>
+							<md-divider ></md-divider>
+						</md-list-item>
+					</md-list>
+				</script>
+			</md-content>
+		</section>
+	</div>
+	<script>
+		
+		var dashboard = angular.module('dashboard', ['ngMaterial', 'PanelMenuModule', 'ngRoute', 'MessengerModule']);
+		
+		dashboard.service('appService', function($http){
+			var that = this;
+			this.apps = [];
+			this.mapApps = [];
+			this.getApps = function(callback){
+				$http.get('/get/app').then(
+				function success(res){
+					rtn = [];
+					if(res.status >= 200 && res.status <= 299){
+						if(res.data){
+							that.apps = res.data;
+							res.data.forEach(function(d){
+								that.mapApps[d._id] = d;
+							});
+								
+							rtn = res.data;
+						}
+					}
+						
+					callback(rtn);
+				},
+				function failed(res){
+					callback([]);
+				});
+			}
+		});
+		
+		dashboard.config(['$routeProvider',
+			function($routeProvider){
+				$routeProvider.
+					when('/app/lists', {
+						templateUrl: '/app/lists.htm'
+					}).
+					when('/manage/app/:id', {
+						templateUrl: '/views/template.manage.app.html',
+						controller: ['$routeParams', '$scope', '$http', 'panelMenuService', 'messengerService', controllerTemplateManageApp]
+					}).
+					when('/response/router/:id', {
+						templateUrl: '/views/template.response.router.html',
+						controller: ['$routeParams', '$scope', '$http', controllerTemplateResponseRouter]
+					}).
+					when('/setting/app/:id', {
+						templateUrl: '/views/template.setting.app.html',
+						controller: ['$routeParams', '$scope', '$http', 'appService', controllerTemplateSettingApp]
+					}).
+					otherwise({
+						templateUrl: '/app/lists.htm'
+					});
+			}
+		]);
+		
+		dashboard.controller('DashboardController', function($scope, $timeout, $mdSidenav, $mdPanel, panelMenuService, $mdDialog, $http, appService){
+			var that = this;
+			//scope variable
+			$scope.progressLoadAppLists = false;
+			$scope.listOfApps = [];
+			$scope.dashboardMenus = [
+				'New App',
+				'Sign Out'
+			];
+			$scope.selectedDashboardMenu = null;
+			
+			//scope function
+			$scope.openDashboardMenu = openDashboardMenu;
+			$scope.toggleMenu = buildToggler('left');
+			$scope.getListOfApp = getListOfApp;
+			$scope.openPreviewAppDialog = openPreviewAppDialog;
+			$scope.manageApp = function(appId){
+				$scope.appId = appId;
+				window.location.href = '#/manage/app/'+appId;
+			}
+			$scope.gotToAppList = function(){
+				window.location.href = '#/app/lists';
+			}
+			
+			//function declaration
+			function buildToggler(componentId){
+				return function(){
+					$mdSidenav(componentId).toggle();
+				}
+			}
+			
+			function openDashboardMenu(event){
+				panelMenuService.create(
+					event,
+					'#dashboard-menu-button',
+					$scope.dashboardMenus, 
+					function(event, menu){
+						if(menu == $scope.dashboardMenus[0]){
+							openNewAppDialog(event);
+						}
+					});
+			}
+			
+			function appDialog(event, data){
+				$mdDialog.show({
+					controller: ['data', '$scope', '$mdDialog' , '$http', newAppController],
+					templateUrl: '/views/dialog.new.app.html',
+					parent: angular.element(document.body),
+					targetEvent: event,
+					locals: {'data': data},
+					clickOutsideToClose:false
+				});
+			}
+			
+			function openNewAppDialog(event){
+				appDialog(event, null);
+			}
+			
+			function openPreviewAppDialog(event, data){
+				appDialog(event, data);
+			}
+			
+			function getListOfApp(){
+				$scope.progressLoadAppLists = true;
+				/*$http.get('/get/app').then(
+				function success(res){
+					if(res.status >= 200 && res.status <= 299){
+						if(res.data){
+							$scope.listOfApps = res.data;
+						}
+					}
+					$scope.progressLoadAppLists = false;
+				},
+				function failed(res){
+					$scope.progressLoadAppLists = false;
+				});*/
+				if(appService.apps.length == 0){
+					appService.getApps(function(apps){
+						$scope.listOfApps = apps;
+						$scope.progressLoadAppLists = false;
+					});
+				}else{
+					$scope.listOfApps = appService.apps;
+					$scope.progressLoadAppLists = false;
+				}
+			}
+			
+		});
+		
+		function newAppController(data, $scope, $mdDialog, $http){
+			isNewApp = (data) ? false : true;
+			
+			$scope.progressIndicator = false;
+			$scope.appName = (data) ? data.appName : '';
+			$scope.appDescription = (data) ? data.appDescription : '';
+			$scope.SForgId = (data) ? data.SForgId : '';
+			$scope.SFconsumerKey = (data) ? data.SFconsumerKey : '';
+			$scope.SFconsumerSecret = (data) ? data.SFconsumerSecret : '';
+			$scope.SFusername = (data) ? data.SFusername : '';
+			$scope.SFpassword = (data) ? data.SFpassword : '';
+			$scope.FBappName = (data) ? data.FBappName : '';
+			$scope.FBpageId = (data) ? data.FBpageId : '';
+			$scope.FBappId = (data) ? data.FBappId : '';
+			$scope.FBappSecret = (data) ? data.FBappSecret : '';
+			$scope.FBpageName = (data) ? data.FBpageName : '';
+			$scope.FBpageAccessToken = (data) ? data.FBpageAccessToken : '';
+			$scope.FBwebhookValidationToken = (data) ? data.FBwebhookValidationToken : '';
+			
+			$scope.save = function(){
+				$scope.progressIndicator = true;
+				var dataToSend = {
+					appName: $scope.appName,
+					appDescription: $scope.appDescription,
+					SForgId: $scope.SForgId,
+					SFconsumerKey: $scope.SFconsumerKey,
+					SFconsumerSecret: $scope.SFconsumerSecret,
+					SFusername: $scope.SFusername,
+					SFpassword: $scope.SFpassword,
+					FBappName: $scope.FBappName,
+					FBpageId: $scope.FBpageId,
+					FBappId: $scope.FBappId,
+					FBappSecret: $scope.FBappSecret,
+					FBpageName: $scope.FBpageName,
+					FBpageAccessToken: $scope.FBpageAccessToken,
+					FBwebhookValidationToken: $scope.FBwebhookValidationToken,
+					isActive: false
+				};
+				
+				if(!isNewApp){
+					dataToSend._id = data._id;
+				}
+				
+				$http.post(isNewApp ? '/new/app' : '/update/app', dataToSend).then(
+					function success(res){
+						if(res.status >= 200 && res.status <= 299){
+							if(res.data.status == 'success'){
+								alert('success saving data');
+								//listOfApps.push(data);
+							}else{
+								alert('failed saving data');
+							}
+						}else{
+							alert('failed saving data');
+						}
+						
+						$scope.progressIndicator = false;
+						$mdDialog.cancel();
+					},
+					function error(res){
+						alert('failed saving data');
+						$scope.progressIndicator = false;
+						$mdDialog.cancel();
+					}
+				);
+			}
+			
+			$scope.cancel = function(){
+				$mdDialog.cancel();
+			}
+		}
+		
+	</script>
+</body>
+</html>

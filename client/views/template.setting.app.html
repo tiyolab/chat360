@@ -1,0 +1,132 @@
+<div layout="row">
+	<md-subheader class="md-primary">Setting({{appId}})</md-subheader>
+	<div flex></div>
+	<md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+		<md-nav-item md-nav-href="#/manage/app/{{appId}}" name="page1">
+			Response Definition
+		</md-nav-item>
+		<md-nav-item md-nav-href="#/response/router/{{appId}}" name="page1">
+			Response Router
+		</md-nav-item>
+		<md-nav-item md-nav-href="#/setting/app/{{appId}}" name="page1">
+			Setting
+		</md-nav-item>
+	</md-nav-bar>
+</div>
+<md-progress-linear md-mode="indeterminate" ng-show="progressLoadApp"></md-progress-linear>	
+<div layout="column" ng-init="init()" class="md-padding">
+	<div layout="row">
+		<div flex></div>
+		<md-switch class="md-primary" md-no-ink aria-label="status" ng-model="isActive" ng-change="appActivationToggle()">
+			{{isActive ? 'Active' : 'Not Active'}}
+		</md-switch>
+	</div>
+	<div class="md-margin">
+		<md-content>
+			<md-tabs md-dynamic-height md-border-bottom>
+				<md-tab label="General Setting">
+					<md-content class="md-padding">
+						<h3>General</h3>
+						<p>Here you define about your app in generic. Please fill the unique App Name.</p>
+						<div>
+							<md-input-container class="md-block">
+								<label>App name</label>
+								<input ng-model="appName" required>
+							</md-input-container>
+
+							<md-input-container class="md-block">
+								<label>Description</label>
+								<textarea ng-model="appDescription" md-maxlength="150" rows="3" ></textarea>
+							</md-input-container>
+						</div>
+					</md-content>
+				</md-tab>
+				<md-tab label="Salesforce Setting">
+					<md-content class="md-padding">
+						<h3>Salesforce Connected App Configuration</h3>
+						<p>You can fill this by reference to your Salesforce Connected App configuration.</p>
+						<div>
+							<md-input-container class="md-block">
+								<label>Org Id</label>
+								<input ng-model="SForgId">
+							</md-input-container>
+
+							<md-input-container class="md-block">
+								<label>Consumer Key</label>
+								<input ng-model="SFconsumerKey">
+							</md-input-container>
+							
+							<md-input-container class="md-block">
+								<label>Consumer Secret</label>
+								<input ng-model="SFconsumerSecret">
+							</md-input-container>
+						</div>
+						
+						<div layout-gt-sm="row">
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Username</label>
+								<input ng-model="SFusername">
+							</md-input-container>
+							
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Password</label>
+								<input type="password" ng-model="SFpassword">
+							</md-input-container>
+						</div>
+					</md-content>
+				</md-tab>
+				<md-tab label="Facebook Setting">
+					<md-content class="md-padding">
+						<h3>Facebook Messaging App Configuration</h3>
+						<p>You can fill this by reference to your Facebook Messenger App configuration.</p>
+						<p><i>* To find FB Page Id. Go to your page -> about -> bottom of your page in more info section, you will find Page ID</i></p>
+						<div layout-gt-sm="row">
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Facebook App Name</label>
+								<input ng-model="FBappName">
+							</md-input-container>
+							
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Facebook App Id</label>
+								<input ng-model="FBappId">
+							</md-input-container>
+						</div>
+						
+						<div>
+							<md-input-container class="md-block">
+								<label>Facebook App Secret</label>
+								<input ng-model="FBappSecret">
+							</md-input-container>
+						</div>
+						
+						<div layout-gt-sm="row">
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Facebook Page Name</label>
+								<input ng-model="FBpageName">
+							</md-input-container>
+							
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Facebook Page ID</label>
+								<input ng-model="FBpageId">
+							</md-input-container>
+						</div>
+						
+						<div>
+							<md-input-container class="md-block">
+								<label>Facebook Page Access Token</label>
+								<input ng-model="FBpageAccessToken">
+							</md-input-container>
+
+							<md-input-container class="md-block">
+								<label>Webhook Validation Token</label>
+								<input ng-model="FBwebhookValidationToken">
+							</md-input-container>
+						</div>
+						
+						
+					</md-content>
+				</md-tab>
+			</md-tabs>
+		</md-content>
+	</div>
+</div>

@@ -1,0 +1,28 @@
+{
+  "name": "stratus360-chatbot",
+  "version": "1.2.0",
+  "description": "stratus360 chatbot SAAS",
+  "main": "app.js",
+  "author": {
+    "name": "Muhammad Sulistiyo",
+    "email": "tyo.sulistiyo@stratus360.com"
+  },
+  "engines": {
+    "node": "~4.1.2"
+  },
+  "scripts": {
+	"start": "node app.js",
+    "lint": "jshint --exclude node_modules .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "cookie-parser": "~1.0.1",
+    "ejs": "^2.4.2",
+    "express": "^4.13.4",
+	"client-sessions": "*",
+    "jsonwebtoken": "^7.3.0",
+    "mongoose": "*",
+	"moment": "*"
+  }
+}

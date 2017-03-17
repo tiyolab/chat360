@@ -1,0 +1,85 @@
+<div layout="row">
+	<md-subheader class="md-primary">Response Defenition({{appId}})</md-subheader>
+	<div flex></div>
+	<md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+		<md-nav-item md-nav-href="#/manage/app/{{appId}}" name="page1">
+			Response Definition
+		</md-nav-item>
+		<md-nav-item md-nav-href="#/response/router/{{appId}}" name="page1">
+			Response Router
+		</md-nav-item>
+		<md-nav-item md-nav-href="#/setting/app/{{appId}}" name="page1">
+			Setting
+		</md-nav-item>
+	</md-nav-bar>
+</div>
+<md-progress-linear md-mode="indeterminate" ng-show="progressLoadBlockStructures"></md-progress-linear>
+<div layout="row" layout-xs="column" ng-init="getBlockStructure()">
+	<div flex="30" style="overflow:auto" class="md-margin">
+		<div class="md-padding" layout="column" style="background:white" >
+			<h3 class="md-title">Blocks</h3>
+			<div>
+				<md-button class="md-raised" ng-repeat="b in blockButton" ng-class="blockButtonAppereance(blockStructureLists[b].blockName)" ng-click="selectBlock(b)">
+					{{blockStructureLists[b].blockName}}
+				</md-button>
+				<md-button class="md-fab md-primary" ng-click="addBlock()">+</md-button>
+			</div>
+		</div>
+	</div>
+	<div flex="70" class="md-margin">
+		<md-content class="md-padding" layout="column" style="background:white">
+			<div layout="row" layout-xs="column">
+				<h3 class="md-title">Block Structure</h3>
+				<div flex></div>
+				<md-fab-speed-dial md-open="false" md-direction="left" class="md-scale" id="block-menu">
+					<md-fab-trigger>
+						<md-button aria-label="menu" class="md-fab md-warn">
+							<md-icon md-svg-icon="/icons/ic_more_vert_white_24px.svg"></md-icon>
+						</md-button>
+					</md-fab-trigger>
+
+					<md-fab-actions>
+						<md-button aria-label="Twitter" class="md-fab md-raised md-mini" ng-click="openResponseTypeMenu($event)">
+							<md-icon md-svg-icon="/icons/ic_add_circle_black_24px.svg" aria-label="Add response type"></md-icon>
+						</md-button>
+						<md-button aria-label="Facebook" class="md-fab md-raised md-mini" ng-click="saveBlock()">
+							<md-icon md-svg-icon="/icons/ic_save_black_24px.svg" aria-label="Save block"></md-icon>
+						</md-button>
+					</md-fab-actions>
+				</md-fab-speed-dial>
+			</div>
+			<div layout="column" id="block-structure-content">
+				<!-- BLOCK NAME -->
+				<md-input-container class="md-block" ng-show="isBlockSelected">
+					<label>Block Name</label>
+					<input ng-model="selectedBlockStructure.blockName" required ng-focus="blockNameFocused($event)" ng-blur="blockNameBlured($event)">
+				</md-input-container>
+				<div ng-repeat="s in selectedBlockStructure.blockStructures" layout="column">
+					
+					<!-- TEXT MESSAGE RESPONSE -->
+					<md-card ng-show="s.type == blockStructureType.text">
+						<md-card-title>
+							<md-card-title-text>
+								<span class="md-headline">{{s.type}} Template</span>
+							</md-card-title-text>
+						</md-card-title>
+						<md-card-content>
+							<md-input-container class="md-block">
+								<label>Message</label>
+								<input ng-model="s.payload" required>
+							</md-input-container>
+						</md-card-content>
+						<md-card-actions layout="row" layout-align="end center">
+							<md-button class="md-icon-button" aria-label="Favorite" ng-click="deleteStructure(s, $index)">
+								<md-icon md-svg-icon="/icons/ic_delete_forever_black_24px.svg"></md-icon>
+							</md-button>
+							<md-button class="md-icon-button" aria-label="Settings" ng-click="saveStructure(s, $index)">
+								<md-icon md-svg-icon="/icons/ic_save_black_24px.svg"></md-icon>
+							</md-button>
+						</md-card-actions>
+					</md-card>
+				</div>
+			</div>
+		</md-content>
+	</div>
+</div>

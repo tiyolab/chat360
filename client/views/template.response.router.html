@@ -1,0 +1,53 @@
+<div layout="row">
+	<md-subheader class="md-primary">Response Router({{appId}})</md-subheader>
+	<div flex></div>
+	<md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+		<md-nav-item md-nav-href="#/manage/app/{{appId}}" name="page1">
+			Response Definition
+		</md-nav-item>
+		<md-nav-item md-nav-href="#/response/router/{{appId}}" name="page1">
+			Response Router
+		</md-nav-item>
+		<md-nav-item md-nav-href="#/setting/app/{{appId}}" name="page1">
+			Setting
+		</md-nav-item>
+	</md-nav-bar>
+</div>
+<md-progress-linear md-mode="indeterminate" ng-show="progressLoadRouters"></md-progress-linear>
+<md-content layout="column" ng-init="init()" ng-cloak>
+	<div class="md-margin" layout="row">
+		<md-button class="md-raised md-primary" ng-click="addRule()">Add Rule +</md-button>
+		<md-button class="md-raised md-primary" ng-click="saveAllRule()">Save All</md-button>
+	</div>
+	<div class="md-margin" layout="column" style="background:white" ng-repeat="r in routers track by $index">
+		<div layout="row">
+			<div flex="50" class="md-padding" layout="column">
+				<p>If user says something similar to</p>
+				<md-chips ng-model="r.request" md-enable-chip-edit="true" placeholder="user says...">
+				</md-chips>
+			</div>
+			<div flex="50" class="md-padding" layout="column">
+				<p>Bot replies with</p>
+				<md-contact-chips
+					ng-model="r.response"
+					md-contacts="queryBlock($query)"
+					md-contact-name="blockName"
+					md-require-match="true"
+					md-highlight-flags="i"
+					filter-selected="true"
+					placeholder="To">
+				</md-contact-chips>
+			</div>
+		</div>
+		
+		<div layout="row">
+			<div flex></div>
+			<md-button aria-label="Twitter" class="md-fab md-raised md-mini" ng-click="SaveOneRule(r, $index)">
+				<md-icon md-svg-icon="/icons/ic_save_black_24px.svg" aria-label="save a rule"></md-icon>
+			</md-button>
+			<md-button aria-label="Facebook" class="md-fab md-raised md-mini" ng-click="DeleteOneRule(r, $index)">
+				<md-icon md-svg-icon="/icons/ic_delete_forever_black_24px.svg" aria-label="delete a rule"></md-icon>
+			</md-button>
+		</div>
+	</div>
+</md-content>

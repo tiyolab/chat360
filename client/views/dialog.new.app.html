@@ -1,0 +1,135 @@
+<md-dialog aria-label="New App">
+	<form>
+		<md-toolbar>
+		  <div class="md-toolbar-tools">
+			<h2>New App</h2>
+			<span flex></span>
+			<md-button class="md-icon-button" ng-click="cancel()">
+			  <md-icon md-svg-src="icons/ic_close_white_24px.svg" aria-label="Close dialog"></md-icon>
+			</md-button>
+		  </div>
+		</md-toolbar>
+		<md-dialog-content style="max-width:800px;max-height:810px;min-width:500px">
+		
+			<md-progress-linear md-mode="indeterminate" ng-show="progressIndicator"></md-progress-linear>
+			
+			<md-tabs md-dynamic-height md-border-bottom>
+				<md-tab label="Step 1">
+					<md-content class="md-padding">
+						<h3>Define App</h3>
+						<p>Here you define about your app in generic. Please fill the unique App Name.</p>
+						<div>
+							<md-input-container class="md-block">
+								<label>App name</label>
+								<input ng-model="appName" required>
+							</md-input-container>
+
+							<md-input-container class="md-block">
+								<label>Description</label>
+								<textarea ng-model="appDescription" md-maxlength="150" rows="3" ></textarea>
+							</md-input-container>
+						</div>
+					</md-content>
+				</md-tab>
+				<md-tab label="Step 2">
+					<md-content class="md-padding">
+						<h3>Salesforce Connected App Configuration</h3>
+						<p>You can fill this by reference to your Salesforce Connected App configuration.</p>
+						<div>
+							<md-input-container class="md-block">
+								<label>Org Id</label>
+								<input ng-model="SForgId">
+							</md-input-container>
+
+							<md-input-container class="md-block">
+								<label>Consumer Key</label>
+								<input ng-model="SFconsumerKey">
+							</md-input-container>
+							
+							<md-input-container class="md-block">
+								<label>Consumer Secret</label>
+								<input ng-model="SFconsumerSecret">
+							</md-input-container>
+						</div>
+						
+						<div layout-gt-sm="row">
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Username</label>
+								<input ng-model="SFusername">
+							</md-input-container>
+							
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Password</label>
+								<input type="password" ng-model="SFpassword">
+							</md-input-container>
+						</div>
+					</md-content>
+				</md-tab>
+				<md-tab label="Step 3">
+					<md-content class="md-padding">
+						<h3>Facebook Messaging App Configuration</h3>
+						<p>You can fill this by reference to your Facebook Messenger App configuration.</p>
+						<p><i>* To find FB Page Id. Go to your page -> about -> bottom of your page in more info section, you will find Page ID</i></p>
+						<div layout-gt-sm="row">
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Facebook App Name</label>
+								<input ng-model="FBappName">
+							</md-input-container>
+							
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Facebook App Id</label>
+								<input ng-model="FBappId">
+							</md-input-container>
+						</div>
+						
+						<div>
+							<md-input-container class="md-block">
+								<label>Facebook App Secret</label>
+								<input ng-model="FBappSecret">
+							</md-input-container>
+						</div>
+						
+						<div layout-gt-sm="row">
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Facebook Page Name</label>
+								<input ng-model="FBpageName">
+							</md-input-container>
+							
+							<md-input-container class="md-block" flex-gt-sm>
+								<label>Facebook Page ID</label>
+								<input ng-model="FBpageId">
+							</md-input-container>
+						</div>
+						
+						<div>
+							<md-input-container class="md-block">
+								<label>Facebook Page Access Token</label>
+								<input ng-model="FBpageAccessToken">
+							</md-input-container>
+
+							<md-input-container class="md-block">
+								<label>Webhook Validation Token</label>
+								<input ng-model="FBwebhookValidationToken">
+							</md-input-container>
+						</div>
+						
+						
+					</md-content>
+				</md-tab>
+			</md-tabs>
+		</md-dialog-content>
+
+		<md-dialog-actions layout="row">
+			<md-button ng-click="prev()" >
+				<
+			</md-button>
+			<md-button ng-click="next()" style="margin-right:20px;" >
+				>
+			</md-button>
+			<span flex></span>
+			<md-button ng-click="save()" >
+				Save
+			</md-button>
+		</md-dialog-actions>
+	</form>
+</md-dialog>
